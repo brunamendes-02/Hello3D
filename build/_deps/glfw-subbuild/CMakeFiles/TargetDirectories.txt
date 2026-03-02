@@ -1,0 +1,3 @@
+/home/bruna/Documentos/Unisinos/8º Semestre/Computação Gráfica/Hello3D/build/_deps/glfw-subbuild/CMakeFiles/glfw-populate.dir
+/home/bruna/Documentos/Unisinos/8º Semestre/Computação Gráfica/Hello3D/build/_deps/glfw-subbuild/CMakeFiles/edit_cache.dir
+/home/bruna/Documentos/Unisinos/8º Semestre/Computação Gráfica/Hello3D/build/_deps/glfw-subbuild/CMakeFiles/rebuild_cache.dir

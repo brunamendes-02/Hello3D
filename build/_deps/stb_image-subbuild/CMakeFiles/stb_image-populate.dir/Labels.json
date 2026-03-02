@@ -1,0 +1,46 @@
+{
+	"sources" : 
+	[
+		{
+			"file" : "/home/bruna/Documentos/Unisinos/8\u00ba Semestre/Computa\u00e7\u00e3o Gr\u00e1fica/Hello3D/build/_deps/stb_image-subbuild/CMakeFiles/stb_image-populate"
+		},
+		{
+			"file" : "/home/bruna/Documentos/Unisinos/8\u00ba Semestre/Computa\u00e7\u00e3o Gr\u00e1fica/Hello3D/build/_deps/stb_image-subbuild/CMakeFiles/stb_image-populate.rule"
+		},
+		{
+			"file" : "/home/bruna/Documentos/Unisinos/8\u00ba Semestre/Computa\u00e7\u00e3o Gr\u00e1fica/Hello3D/build/_deps/stb_image-subbuild/CMakeFiles/stb_image-populate-complete.rule"
+		},
+		{
+			"file" : "/home/bruna/Documentos/Unisinos/8\u00ba Semestre/Computa\u00e7\u00e3o Gr\u00e1fica/Hello3D/build/_deps/stb_image-subbuild/stb_image-populate-prefix/src/stb_image-populate-stamp/stb_image-populate-build.rule"
+		},
+		{
+			"file" : "/home/bruna/Documentos/Unisinos/8\u00ba Semestre/Computa\u00e7\u00e3o Gr\u00e1fica/Hello3D/build/_deps/stb_image-subbuild/stb_image-populate-prefix/src/stb_image-populate-stamp/stb_image-populate-configure.rule"
+		},
+		{
+			"file" : "/home/bruna/Documentos/Unisinos/8\u00ba Semestre/Computa\u00e7\u00e3o Gr\u00e1fica/Hello3D/build/_deps/stb_image-subbuild/stb_image-populate-prefix/src/stb_image-populate-stamp/stb_image-populate-download.rule"
+		},
+		{
+			"file" : "/home/bruna/Documentos/Unisinos/8\u00ba Semestre/Computa\u00e7\u00e3o Gr\u00e1fica/Hello3D/build/_deps/stb_image-subbuild/stb_image-populate-prefix/src/stb_image-populate-stamp/stb_image-populate-install.rule"
+		},
+		{
+			"file" : "/home/bruna/Documentos/Unisinos/8\u00ba Semestre/Computa\u00e7\u00e3o Gr\u00e1fica/Hello3D/build/_deps/stb_image-subbuild/stb_image-populate-prefix/src/stb_image-populate-stamp/stb_image-populate-mkdir.rule"
+		},
+		{
+			"file" : "/home/bruna/Documentos/Unisinos/8\u00ba Semestre/Computa\u00e7\u00e3o Gr\u00e1fica/Hello3D/build/_deps/stb_image-subbuild/stb_image-populate-prefix/src/stb_image-populate-stamp/stb_image-populate-patch.rule"
+		},
+		{
+			"file" : "/home/bruna/Documentos/Unisinos/8\u00ba Semestre/Computa\u00e7\u00e3o Gr\u00e1fica/Hello3D/build/_deps/stb_image-subbuild/stb_image-populate-prefix/src/stb_image-populate-stamp/stb_image-populate-test.rule"
+		},
+		{
+			"file" : "/home/bruna/Documentos/Unisinos/8\u00ba Semestre/Computa\u00e7\u00e3o Gr\u00e1fica/Hello3D/build/_deps/stb_image-subbuild/stb_image-populate-prefix/src/stb_image-populate-stamp/stb_image-populate-update.rule"
+		}
+	],
+	"target" : 
+	{
+		"labels" : 
+		[
+			"stb_image-populate"
+		],
+		"name" : "stb_image-populate"
+	}
+}

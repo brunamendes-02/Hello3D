@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/Hello3D.dir/src/Hello3D.cpp.o CMakeFiles/Hello3D.dir/common/glad.c.o -o Hello3D  _deps/glfw-build/src/libglfw3.a /usr/lib/x86_64-linux-gnu/libGL.so /usr/lib/x86_64-linux-gnu/librt.a -lm -ldl 
