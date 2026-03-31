@@ -30,6 +30,7 @@ float scaleFactor = 1.0f;
 
 // Protótipo da função de callback de teclado
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 // Protótipos das funções
 int setupShader();
@@ -43,11 +44,12 @@ const GLchar* vertexShaderSource = "#version 450\n"
 "layout (location = 0) in vec3 position;\n"
 "layout (location = 1) in vec3 color;\n"
 "uniform mat4 model;\n"
+"uniform mat4 view;\n"
+"uniform mat4 projection;\n"
 "out vec4 finalColor;\n"
 "void main()\n"
 "{\n"
-//...pode ter mais linhas de código aqui!
-"gl_Position = model * vec4(position, 1.0);\n"
+"gl_Position = projection * view * model * vec4(position, 1.0);\n"
 "finalColor = vec4(color, 1.0);\n"
 "}\0";
 
@@ -87,6 +89,7 @@ int main()
 
 	// Fazendo o registro da função de callback para a janela GLFW
 	glfwSetKeyCallback(window, key_callback);
+	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
 	// GLAD: carrega todos os ponteiros d funções da OpenGL
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -120,18 +123,29 @@ int main()
 
 
 	glUseProgram(shaderID);
+	GLuint viewLoc = glGetUniformLocation(shaderID, "view");
+	GLuint projLoc = glGetUniformLocation(shaderID, "projection");
 
 	glm::mat4 model = glm::mat4(1); //matriz identidade;
 	GLint modelLoc = glGetUniformLocation(shaderID, "model");
-	//
-	// model = glm::rotate(model, /*(GLfloat)glfwGetTime()*/glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	// glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
 	glEnable(GL_DEPTH_TEST);
 
+	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
 	// Loop da aplicação - "game loop"
 	while (!glfwWindowShouldClose(window))
 	{
+		int width, height;
+		glfwGetFramebufferSize(window, &width, &height);
+
+		glm::mat4 projection = glm::perspective(
+			glm::radians(60.0f),
+			(float)width / (float)height,
+			0.1f,
+			100.0f
+		);
+		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
+		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glfwPollEvents();
 
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -145,7 +159,6 @@ int main()
 		{
 			glm::mat4 model = glm::mat4(1);
 
-			// Translação (posição individual + controle teclado)
 			model = glm::translate(model, pos + position);
 
 			// Rotação
@@ -220,6 +233,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_RIGHT_BRACKET && action == GLFW_PRESS) scaleFactor += 0.1f;
 
 	if (scaleFactor < 0.1f) scaleFactor = 0.1f;
+}
+
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
 }
 
 //Esta função está bastante hardcoded - objetivo é compilar e "buildar" um programa de
