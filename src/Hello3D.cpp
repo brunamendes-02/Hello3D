@@ -9,6 +9,7 @@
 #include <iostream>
 #include <string>
 #include <assert.h>
+#include <vector>
 
 using namespace std;
 
@@ -23,6 +24,9 @@ using namespace std;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+
+glm::vec3 position(0.0f, 0.0f, 0.0f);
+float scaleFactor = 1.0f;
 
 // Protótipo da função de callback de teclado
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -108,6 +112,11 @@ int main()
 
 	// Gerando um buffer simples, com a geometria de um triângulo
 	GLuint VAO = setupGeometry();
+	std::vector<glm::vec3> cubePositions = {
+		glm::vec3(0.0f, 0.0f, 0.0f),
+		glm::vec3(1.5f, 0.0f, 0.0f),
+		glm::vec3(-1.5f, 0.0f, 0.0f)
+	};
 
 
 	glUseProgram(shaderID);
@@ -115,60 +124,52 @@ int main()
 	glm::mat4 model = glm::mat4(1); //matriz identidade;
 	GLint modelLoc = glGetUniformLocation(shaderID, "model");
 	//
-	model = glm::rotate(model, /*(GLfloat)glfwGetTime()*/glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+	// model = glm::rotate(model, /*(GLfloat)glfwGetTime()*/glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+	// glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
 	glEnable(GL_DEPTH_TEST);
-
 
 	// Loop da aplicação - "game loop"
 	while (!glfwWindowShouldClose(window))
 	{
-		// Checa se houveram eventos de input (key pressed, mouse moved etc.) e chama as funções de callback correspondentes
 		glfwPollEvents();
 
-		// Limpa o buffer de cor
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f); //cor de fundo
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		glLineWidth(10);
-		glPointSize(20);
 
 		float angle = (GLfloat)glfwGetTime();
 
-		model = glm::mat4(1); 
-		if (rotateX)
-		{
-			model = glm::rotate(model, angle, glm::vec3(1.0f, 0.0f, 0.0f));
-			
-		}
-		else if (rotateY)
-		{
-			model = glm::rotate(model, angle, glm::vec3(0.0f, 1.0f, 0.0f));
-
-		}
-		else if (rotateZ)
-		{
-			model = glm::rotate(model, angle, glm::vec3(0.0f, 0.0f, 1.0f));
-
-		}
-
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		// Chamada de desenho - drawcall
-		// Poligono Preenchido - GL_TRIANGLES
-		
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 18);
 
-		// Chamada de desenho - drawcall
-		// CONTORNO - GL_LINE_LOOP
-		
-		glDrawArrays(GL_POINTS, 0, 18);
+		for (auto pos : cubePositions)
+		{
+			glm::mat4 model = glm::mat4(1);
+
+			// Translação (posição individual + controle teclado)
+			model = glm::translate(model, pos + position);
+
+			// Rotação
+			if (rotateX)
+				model = glm::rotate(model, angle, glm::vec3(1,0,0));
+			else if (rotateY)
+				model = glm::rotate(model, angle, glm::vec3(0,1,0));
+			else if (rotateZ)
+				model = glm::rotate(model, angle, glm::vec3(0,0,1));
+
+			// Escala
+			model = glm::scale(model, glm::vec3(scaleFactor));
+
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
+
 		glBindVertexArray(0);
 
-		// Troca os buffers da tela
 		glfwSwapBuffers(window);
 	}
+
+
 	// Pede pra OpenGL desalocar os buffers
 	glDeleteVertexArrays(1, &VAO);
 	// Finaliza a execução da GLFW, limpando os recursos alocados por ela
@@ -205,8 +206,20 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		rotateZ = true;
 	}
 
+	float step = 0.1f;
 
+	if (key == GLFW_KEY_W && action == GLFW_PRESS) position.z -= step;
+	if (key == GLFW_KEY_S && action == GLFW_PRESS) position.z += step;
+	if (key == GLFW_KEY_A && action == GLFW_PRESS) position.x -= step;
+	if (key == GLFW_KEY_D && action == GLFW_PRESS) position.x += step;
 
+	if (key == GLFW_KEY_I && action == GLFW_PRESS) position.y += step;
+	if (key == GLFW_KEY_J && action == GLFW_PRESS) position.y -= step;
+
+	if (key == GLFW_KEY_LEFT_BRACKET && action == GLFW_PRESS) scaleFactor -= 0.1f;
+	if (key == GLFW_KEY_RIGHT_BRACKET && action == GLFW_PRESS) scaleFactor += 0.1f;
+
+	if (scaleFactor < 0.1f) scaleFactor = 0.1f;
 }
 
 //Esta função está bastante hardcoded - objetivo é compilar e "buildar" um programa de
@@ -268,38 +281,55 @@ int setupGeometry()
 	// sequencial, já visando mandar para o VBO (Vertex Buffer Objects)
 	// Cada atributo do vértice (coordenada, cores, coordenadas de textura, normal, etc)
 	// Pode ser arazenado em um VBO único ou em VBOs separados
-	GLfloat vertices[] = {
+GLfloat vertices[] = {
+	-0.5, -0.5, -0.5, 1, 0, 0,
+	0.5, -0.5, -0.5, 1, 0, 0,
+	0.5,  0.5, -0.5, 1, 0, 0,
 
-		//Base da piramide: 2 triângulos
-		//x    y    z    r    g    b
-		-0.5, -0.5, -0.5, 1.0, 1.0, 0.0,
-		-0.5, -0.5,  0.5, 0.0, 1.0, 1.0,
-		 0.5, -0.5, -0.5, 1.0, 0.0, 1.0,
+	0.5,  0.5, -0.5, 1, 0, 0,
+	-0.5,  0.5, -0.5, 1, 0, 0,
+	-0.5, -0.5, -0.5, 1, 0, 0,
 
-		 -0.5, -0.5, 0.5, 1.0, 1.0, 0.0,
-		  0.5, -0.5,  0.5, 0.0, 1.0, 1.0,
-		  0.5, -0.5, -0.5, 1.0, 0.0, 1.0,
+	-0.5, -0.5,  0.5, 0, 1, 0,
+	0.5, -0.5,  0.5, 0, 1, 0,
+	0.5,  0.5,  0.5, 0, 1, 0,
 
-		 //
-		 -0.5, -0.5, -0.5, 1.0, 1.0, 0.0,
-		  0.0,  0.5,  0.0, 1.0, 1.0, 0.0,
-		  0.5, -0.5, -0.5, 1.0, 1.0, 0.0,
+	0.5,  0.5,  0.5, 0, 1, 0,
+	-0.5,  0.5,  0.5, 0, 1, 0,
+	-0.5, -0.5,  0.5, 0, 1, 0,
 
-		  -0.5, -0.5, -0.5, 1.0, 0.0, 1.0,
-		  0.0,  0.5,  0.0, 1.0, 0.0, 1.0,
-		  -0.5, -0.5, 0.5, 1.0, 0.0, 1.0,
+	-0.5,  0.5,  0.5, 0, 0, 1,
+	-0.5,  0.5, -0.5, 0, 0, 1,
+	-0.5, -0.5, -0.5, 0, 0, 1,
 
-		   -0.5, -0.5, 0.5, 1.0, 1.0, 0.0,
-		  0.0,  0.5,  0.0, 1.0, 1.0, 0.0,
-		  0.5, -0.5, 0.5, 1.0, 1.0, 0.0,
+	-0.5, -0.5, -0.5, 0, 0, 1,
+	-0.5, -0.5,  0.5, 0, 0, 1,
+	-0.5,  0.5,  0.5, 0, 0, 1,
 
-		   0.5, -0.5, 0.5, 0.0, 1.0, 1.0,
-		  0.0,  0.5,  0.0, 0.0, 1.0, 1.0,
-		  0.5, -0.5, -0.5, 0.0, 1.0, 1.0,
+	0.5,  0.5,  0.5, 1, 1, 0,
+	0.5,  0.5, -0.5, 1, 1, 0,
+	0.5, -0.5, -0.5, 1, 1, 0,
 
+	0.5, -0.5, -0.5, 1, 1, 0,
+	0.5, -0.5,  0.5, 1, 1, 0,
+	0.5,  0.5,  0.5, 1, 1, 0,
 
+	-0.5, -0.5, -0.5, 1, 0, 1,
+	0.5, -0.5, -0.5, 1, 0, 1,
+	0.5, -0.5,  0.5, 1, 0, 1,
+
+	0.5, -0.5,  0.5, 1, 0, 1,
+	-0.5, -0.5,  0.5, 1, 0, 1,
+	-0.5, -0.5, -0.5, 1, 0, 1,
+
+	-0.5,  0.5, -0.5, 1, 0.5, 0,
+	0.5,  0.5, -0.5, 1, 0.5, 0,
+	0.5,  0.5,  0.5, 1, 0.5, 0,
+
+	0.5,  0.5,  0.5, 1, 0.5, 0,
+	-0.5,  0.5,  0.5, 1, 0.5, 0,
+	-0.5,  0.5, -0.5, 1, 0.5, 0,
 	};
-
 	GLuint VBO, VAO;
 
 	//Geração do identificador do VBO

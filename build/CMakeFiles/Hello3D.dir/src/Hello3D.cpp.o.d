@@ -146,6 +146,10 @@ CMakeFiles/Hello3D.dir/src/Hello3D.cpp.o: \
  /usr/include/c++/11/bits/basic_ios.tcc \
  /usr/include/c++/11/bits/ostream.tcc /usr/include/c++/11/istream \
  /usr/include/c++/11/bits/istream.tcc /usr/include/assert.h \
+ /usr/include/c++/11/vector /usr/include/c++/11/bits/stl_uninitialized.h \
+ /usr/include/c++/11/bits/stl_vector.h \
+ /usr/include/c++/11/bits/stl_bvector.h \
+ /usr/include/c++/11/bits/vector.tcc \
  /home/bruna/Documentos/Unisinos/8º\ Semestre/Computação\ Gráfica/Hello3D/include/glad/glad.h \
  /home/bruna/Documentos/Unisinos/8º\ Semestre/Computação\ Gráfica/Hello3D/include/glad/KHR/khrplatform.h \
  /home/bruna/Documentos/Unisinos/8º\ Semestre/Computação\ Gráfica/Hello3D/build/_deps/glfw-src/include/GLFW/glfw3.h \
@@ -225,11 +229,7 @@ CMakeFiles/Hello3D.dir/src/Hello3D.cpp.o: \
  /usr/include/c++/11/bits/enable_special_members.h \
  /usr/include/c++/11/bits/node_handle.h \
  /usr/include/c++/11/bits/unordered_map.h \
- /usr/include/c++/11/bits/erase_if.h /usr/include/c++/11/vector \
- /usr/include/c++/11/bits/stl_uninitialized.h \
- /usr/include/c++/11/bits/stl_vector.h \
- /usr/include/c++/11/bits/stl_bvector.h \
- /usr/include/c++/11/bits/vector.tcc /usr/include/c++/11/bits/stl_algo.h \
+ /usr/include/c++/11/bits/erase_if.h /usr/include/c++/11/bits/stl_algo.h \
  /usr/include/c++/11/bits/algorithmfwd.h \
  /usr/include/c++/11/bits/stl_heap.h \
  /usr/include/c++/11/bits/stl_tempbuf.h \
