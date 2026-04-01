@@ -105,9 +105,18 @@ int loadSimpleOBJ(string filePATH, int &nVertices)
                 vBuffer.push_back(vertices[vi].x);
                 vBuffer.push_back(vertices[vi].y);
                 vBuffer.push_back(vertices[vi].z);
+
                 vBuffer.push_back(color.r);
                 vBuffer.push_back(color.g);
                 vBuffer.push_back(color.b);
+
+                if (ti >= 0 && ti < texCoords.size()) {
+                    vBuffer.push_back(texCoords[ti].x);
+                    vBuffer.push_back(texCoords[ti].y);
+                } else {
+                    vBuffer.push_back(0.0f);
+                    vBuffer.push_back(0.0f);
+                }
             }
         }
     }
@@ -119,20 +128,23 @@ int loadSimpleOBJ(string filePATH, int &nVertices)
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, vBuffer.size() * sizeof(GLfloat), vBuffer.data(), GL_STATIC_DRAW);
-    
+
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
-    
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(1);
-    
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(2);
+
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-	nVertices = vBuffer.size() / 6;  // x, y, z, r, g, b (valores atualmente armazenados por vértice)
+    nVertices = vBuffer.size() / 8;
 
     return VAO;
-}
+ }

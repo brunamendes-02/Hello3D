@@ -1,5 +1,5 @@
-CMakeFiles/Hello3D.dir/src/Hello3D.cpp.o: \
- /home/bruna/Documentos/Unisinos/8º\ Semestre/Computação\ Gráfica/Hello3D/src/Hello3D.cpp \
+CMakeFiles/Hello3D.dir/src/LoadSimpleOBJ.cpp.o: \
+ /home/bruna/Documentos/Unisinos/8º\ Semestre/Computação\ Gráfica/Hello3D/src/LoadSimpleOBJ.cpp \
  /usr/include/stdc-predef.h /usr/include/c++/11/iostream \
  /usr/include/x86_64-linux-gnu/c++/11/bits/c++config.h \
  /usr/include/x86_64-linux-gnu/c++/11/bits/os_defines.h \
@@ -145,8 +145,13 @@ CMakeFiles/Hello3D.dir/src/Hello3D.cpp.o: \
  /usr/include/c++/11/bits/locale_facets.tcc \
  /usr/include/c++/11/bits/basic_ios.tcc \
  /usr/include/c++/11/bits/ostream.tcc /usr/include/c++/11/istream \
- /usr/include/c++/11/bits/istream.tcc /usr/include/assert.h \
- /usr/include/c++/11/vector /usr/include/c++/11/bits/stl_uninitialized.h \
+ /usr/include/c++/11/bits/istream.tcc /usr/include/c++/11/fstream \
+ /usr/include/c++/11/bits/codecvt.h \
+ /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
+ /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
+ /usr/include/c++/11/bits/fstream.tcc /usr/include/c++/11/sstream \
+ /usr/include/c++/11/bits/sstream.tcc /usr/include/c++/11/vector \
+ /usr/include/c++/11/bits/stl_uninitialized.h \
  /usr/include/c++/11/bits/stl_vector.h \
  /usr/include/c++/11/bits/stl_bvector.h \
  /usr/include/c++/11/bits/vector.tcc \
@@ -179,7 +184,8 @@ CMakeFiles/Hello3D.dir/src/Hello3D.cpp.o: \
  /usr/include/c++/11/tr1/poly_laguerre.tcc \
  /usr/include/c++/11/tr1/riemann_zeta.tcc \
  /home/bruna/Documentos/Unisinos/8º\ Semestre/Computação\ Gráfica/Hello3D/build/_deps/glm-src/glm/detail/setup.hpp \
- /usr/include/c++/11/cassert /usr/include/c++/11/cstddef \
+ /usr/include/c++/11/cassert /usr/include/assert.h \
+ /usr/include/c++/11/cstddef \
  /home/bruna/Documentos/Unisinos/8º\ Semestre/Computação\ Gráfica/Hello3D/build/_deps/glm-src/glm/detail/../simd/platform.h \
  /usr/include/c++/11/climits \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/limits.h \
@@ -397,10 +403,4 @@ CMakeFiles/Hello3D.dir/src/Hello3D.cpp.o: \
  /home/bruna/Documentos/Unisinos/8º\ Semestre/Computação\ Gráfica/Hello3D/build/_deps/glm-src/glm/gtc/../gtc/../ext/vector_uint1.hpp \
  /home/bruna/Documentos/Unisinos/8º\ Semestre/Computação\ Gráfica/Hello3D/build/_deps/glm-src/glm/gtc/../gtc/../ext/vector_uint1_sized.hpp \
  /usr/include/c++/11/cstring /usr/include/string.h /usr/include/strings.h \
- /home/bruna/Documentos/Unisinos/8º\ Semestre/Computação\ Gráfica/Hello3D/build/_deps/glm-src/glm/gtc/type_ptr.inl \
- /home/bruna/Documentos/Unisinos/8º\ Semestre/Computação\ Gráfica/Hello3D/include/stb_image.h \
- /usr/include/c++/11/stdlib.h /usr/include/c++/11/math.h \
- /usr/lib/gcc/x86_64-linux-gnu/11/include/emmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/11/include/xmmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/11/include/mmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/11/include/mm_malloc.h
+ /home/bruna/Documentos/Unisinos/8º\ Semestre/Computação\ Gráfica/Hello3D/build/_deps/glm-src/glm/gtc/type_ptr.inl

@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/TriangleTex.dir/common/glad.c.o"
   "CMakeFiles/TriangleTex.dir/common/glad.c.o.d"
+  "CMakeFiles/TriangleTex.dir/src/LoadSimpleOBJ.cpp.o"
+  "CMakeFiles/TriangleTex.dir/src/LoadSimpleOBJ.cpp.o.d"
   "CMakeFiles/TriangleTex.dir/src/TriangleTex.cpp.o"
   "CMakeFiles/TriangleTex.dir/src/TriangleTex.cpp.o.d"
   "TriangleTex"

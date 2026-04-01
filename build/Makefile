@@ -306,6 +306,36 @@ src/Hello3D.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Hello3D.dir/build.make CMakeFiles/Hello3D.dir/src/Hello3D.cpp.s
 .PHONY : src/Hello3D.cpp.s
 
+src/LoadSimpleOBJ.o: src/LoadSimpleOBJ.cpp.o
+.PHONY : src/LoadSimpleOBJ.o
+
+# target to build an object file
+src/LoadSimpleOBJ.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Hello3D.dir/build.make CMakeFiles/Hello3D.dir/src/LoadSimpleOBJ.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TriangleTex.dir/build.make CMakeFiles/TriangleTex.dir/src/LoadSimpleOBJ.cpp.o
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SpherePhong.dir/build.make CMakeFiles/SpherePhong.dir/src/LoadSimpleOBJ.cpp.o
+.PHONY : src/LoadSimpleOBJ.cpp.o
+
+src/LoadSimpleOBJ.i: src/LoadSimpleOBJ.cpp.i
+.PHONY : src/LoadSimpleOBJ.i
+
+# target to preprocess a source file
+src/LoadSimpleOBJ.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Hello3D.dir/build.make CMakeFiles/Hello3D.dir/src/LoadSimpleOBJ.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TriangleTex.dir/build.make CMakeFiles/TriangleTex.dir/src/LoadSimpleOBJ.cpp.i
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SpherePhong.dir/build.make CMakeFiles/SpherePhong.dir/src/LoadSimpleOBJ.cpp.i
+.PHONY : src/LoadSimpleOBJ.cpp.i
+
+src/LoadSimpleOBJ.s: src/LoadSimpleOBJ.cpp.s
+.PHONY : src/LoadSimpleOBJ.s
+
+# target to generate assembly for a file
+src/LoadSimpleOBJ.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Hello3D.dir/build.make CMakeFiles/Hello3D.dir/src/LoadSimpleOBJ.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/TriangleTex.dir/build.make CMakeFiles/TriangleTex.dir/src/LoadSimpleOBJ.cpp.s
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/SpherePhong.dir/build.make CMakeFiles/SpherePhong.dir/src/LoadSimpleOBJ.cpp.s
+.PHONY : src/LoadSimpleOBJ.cpp.s
+
 src/SpherePhong.o: src/SpherePhong.cpp.o
 .PHONY : src/SpherePhong.o
 
@@ -379,6 +409,9 @@ help:
 	@echo "... src/Hello3D.o"
 	@echo "... src/Hello3D.i"
 	@echo "... src/Hello3D.s"
+	@echo "... src/LoadSimpleOBJ.o"
+	@echo "... src/LoadSimpleOBJ.i"
+	@echo "... src/LoadSimpleOBJ.s"
 	@echo "... src/SpherePhong.o"
 	@echo "... src/SpherePhong.i"
 	@echo "... src/SpherePhong.s"

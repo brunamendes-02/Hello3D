@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/bruna/Documentos/Unisinos/8º Semestre/Computação Gráfica/Hello3D/common/glad.c" "CMakeFiles/SpherePhong.dir/common/glad.c.o" "gcc" "CMakeFiles/SpherePhong.dir/common/glad.c.o.d"
+  "/home/bruna/Documentos/Unisinos/8º Semestre/Computação Gráfica/Hello3D/src/LoadSimpleOBJ.cpp" "CMakeFiles/SpherePhong.dir/src/LoadSimpleOBJ.cpp.o" "gcc" "CMakeFiles/SpherePhong.dir/src/LoadSimpleOBJ.cpp.o.d"
   "/home/bruna/Documentos/Unisinos/8º Semestre/Computação Gráfica/Hello3D/src/SpherePhong.cpp" "CMakeFiles/SpherePhong.dir/src/SpherePhong.cpp.o" "gcc" "CMakeFiles/SpherePhong.dir/src/SpherePhong.cpp.o.d"
   )
 

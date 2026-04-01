@@ -1,6 +1,8 @@
 file(REMOVE_RECURSE
   "CMakeFiles/SpherePhong.dir/common/glad.c.o"
   "CMakeFiles/SpherePhong.dir/common/glad.c.o.d"
+  "CMakeFiles/SpherePhong.dir/src/LoadSimpleOBJ.cpp.o"
+  "CMakeFiles/SpherePhong.dir/src/LoadSimpleOBJ.cpp.o.d"
   "CMakeFiles/SpherePhong.dir/src/SpherePhong.cpp.o"
   "CMakeFiles/SpherePhong.dir/src/SpherePhong.cpp.o.d"
   "SpherePhong"

@@ -3,6 +3,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/Hello3D.dir/common/glad.c.o.d"
   "CMakeFiles/Hello3D.dir/src/Hello3D.cpp.o"
   "CMakeFiles/Hello3D.dir/src/Hello3D.cpp.o.d"
+  "CMakeFiles/Hello3D.dir/src/LoadSimpleOBJ.cpp.o"
+  "CMakeFiles/Hello3D.dir/src/LoadSimpleOBJ.cpp.o.d"
   "Hello3D"
   "Hello3D.pdb"
 )

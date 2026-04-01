@@ -24,13 +24,17 @@ using namespace std;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 
 glm::vec3 position(0.0f, 0.0f, 0.0f);
-float scaleFactor = 1.0f;
+float scaleFactor = 0.5f;
 
 // Protótipo da função de callback de teclado
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+int loadSimpleOBJ(std::string filePATH, int &nVertices);
 
 // Protótipos das funções
 int setupShader();
@@ -43,26 +47,70 @@ const GLuint WIDTH = 1000, HEIGHT = 1000;
 const GLchar* vertexShaderSource = "#version 450\n"
 "layout (location = 0) in vec3 position;\n"
 "layout (location = 1) in vec3 color;\n"
+"layout (location = 2) in vec2 texCoord;\n"
+"\n"
+"out vec4 vertexColor;\n"
+"out vec2 TexCoord;\n"
+"\n"
 "uniform mat4 model;\n"
 "uniform mat4 view;\n"
 "uniform mat4 projection;\n"
-"out vec4 finalColor;\n"
+"\n"
 "void main()\n"
 "{\n"
 "gl_Position = projection * view * model * vec4(position, 1.0);\n"
-"finalColor = vec4(color, 1.0);\n"
+"vertexColor = vec4(color, 1.0);\n"
+"TexCoord = texCoord;\n"
 "}\0";
 
 //Código fonte do Fragment Shader (em GLSL): ainda hardcoded
 const GLchar* fragmentShaderSource = "#version 450\n"
-"in vec4 finalColor;\n"
+"in vec4 vertexColor;\n"
+"in vec2 TexCoord;\n"
+"\n"
 "out vec4 color;\n"
+"\n"
+"uniform sampler2D tex_buffer;\n"
+"\n"
 "void main()\n"
 "{\n"
-"color = finalColor;\n"
+"color = texture(tex_buffer, TexCoord);\n"
 "}\n\0";
 
 bool rotateX=false, rotateY=false, rotateZ=false;
+
+GLuint loadTexture(const std::string& path)
+{
+	GLuint texID;
+	glGenTextures(1, &texID);
+	glBindTexture(GL_TEXTURE_2D, texID);
+
+	// parâmetros
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	int width, height, nrChannels;
+	unsigned char* data = stbi_load(path.c_str(), &width, &height, &nrChannels, 0);
+
+	if (data)
+	{
+		GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;
+
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+	{
+		std::cout << "Erro ao carregar textura: " << path << std::endl;
+	}
+
+	stbi_image_free(data);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	return texID;
+}
 
 // Função MAIN
 int main()
@@ -114,7 +162,9 @@ int main()
 	GLuint shaderID = setupShader();
 
 	// Gerando um buffer simples, com a geometria de um triângulo
-	GLuint VAO = setupGeometry();
+	// GLuint VAO = setupGeometry();
+	int nVertices;
+	GLuint VAO = loadSimpleOBJ("../assets/Modelos3D/Cube.obj", nVertices);
 	std::vector<glm::vec3> cubePositions = {
 		glm::vec3(0.0f, 0.0f, 0.0f),
 		glm::vec3(1.5f, 0.0f, 0.0f),
@@ -123,6 +173,8 @@ int main()
 
 
 	glUseProgram(shaderID);
+	GLuint texID = loadTexture("../assets/tex/pixelWall.png");
+	glUniform1i(glGetUniformLocation(shaderID, "tex_buffer"), 0);
 	GLuint viewLoc = glGetUniformLocation(shaderID, "view");
 	GLuint projLoc = glGetUniformLocation(shaderID, "projection");
 
@@ -152,6 +204,8 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		float angle = (GLfloat)glfwGetTime();
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texID);
 
 		glBindVertexArray(VAO);
 
@@ -174,7 +228,7 @@ int main()
 
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-			glDrawArrays(GL_TRIANGLES, 0, 36);
+			glDrawArrays(GL_TRIANGLES, 0, nVertices);
 		}
 
 		glBindVertexArray(0);

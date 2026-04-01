@@ -10,6 +10,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/bruna/Documentos/Unisinos/8º Semestre/Computação Gráfica/Hello3D/common/glad.c" "CMakeFiles/Hello3D.dir/common/glad.c.o" "gcc" "CMakeFiles/Hello3D.dir/common/glad.c.o.d"
   "/home/bruna/Documentos/Unisinos/8º Semestre/Computação Gráfica/Hello3D/src/Hello3D.cpp" "CMakeFiles/Hello3D.dir/src/Hello3D.cpp.o" "gcc" "CMakeFiles/Hello3D.dir/src/Hello3D.cpp.o.d"
+  "/home/bruna/Documentos/Unisinos/8º Semestre/Computação Gráfica/Hello3D/src/LoadSimpleOBJ.cpp" "CMakeFiles/Hello3D.dir/src/LoadSimpleOBJ.cpp.o" "gcc" "CMakeFiles/Hello3D.dir/src/LoadSimpleOBJ.cpp.o.d"
   )
 
 # Targets to which this target links.

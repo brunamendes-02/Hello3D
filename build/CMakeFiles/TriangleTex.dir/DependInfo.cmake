@@ -9,6 +9,7 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of dependency files which are needed:
 set(CMAKE_DEPENDS_DEPENDENCY_FILES
   "/home/bruna/Documentos/Unisinos/8º Semestre/Computação Gráfica/Hello3D/common/glad.c" "CMakeFiles/TriangleTex.dir/common/glad.c.o" "gcc" "CMakeFiles/TriangleTex.dir/common/glad.c.o.d"
+  "/home/bruna/Documentos/Unisinos/8º Semestre/Computação Gráfica/Hello3D/src/LoadSimpleOBJ.cpp" "CMakeFiles/TriangleTex.dir/src/LoadSimpleOBJ.cpp.o" "gcc" "CMakeFiles/TriangleTex.dir/src/LoadSimpleOBJ.cpp.o.d"
   "/home/bruna/Documentos/Unisinos/8º Semestre/Computação Gráfica/Hello3D/src/TriangleTex.cpp" "CMakeFiles/TriangleTex.dir/src/TriangleTex.cpp.o" "gcc" "CMakeFiles/TriangleTex.dir/src/TriangleTex.cpp.o.d"
   )
 
