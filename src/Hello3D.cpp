@@ -202,7 +202,7 @@ int main()
 
 
 	glUseProgram(shaderID);
-	glUniform3f(glGetUniformLocation(shaderID, "lightPos"), 2.0f, 2.0f, 2.0f);
+	glUniform3f(glGetUniformLocation(shaderID, "lightPos"), 0.0f, 0.0f, 3.0f);
 	glUniform3f(glGetUniformLocation(shaderID, "viewPos"), 0.0f, 0.0f, 3.0f);
 	glUniform3f(glGetUniformLocation(shaderID, "lightColor"), 1.0f, 1.0f, 1.0f);
 	glUniform3f(glGetUniformLocation(shaderID, "ka"), 0.2f, 0.2f, 0.2f);
