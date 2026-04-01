@@ -48,9 +48,11 @@ const GLchar* vertexShaderSource = "#version 450\n"
 "layout (location = 0) in vec3 position;\n"
 "layout (location = 1) in vec3 color;\n"
 "layout (location = 2) in vec2 texCoord;\n"
+"layout (location = 3) in vec3 normal;\n"
 "\n"
-"out vec4 vertexColor;\n"
 "out vec2 TexCoord;\n"
+"out vec3 FragPos;\n"
+"out vec3 Normal;\n"
 "\n"
 "uniform mat4 model;\n"
 "uniform mat4 view;\n"
@@ -58,23 +60,50 @@ const GLchar* vertexShaderSource = "#version 450\n"
 "\n"
 "void main()\n"
 "{\n"
-"gl_Position = projection * view * model * vec4(position, 1.0);\n"
-"vertexColor = vec4(color, 1.0);\n"
+"FragPos = vec3(model * vec4(position, 1.0));\n"
+"Normal = mat3(transpose(inverse(model))) * normal;\n"
 "TexCoord = texCoord;\n"
+"\n"
+"gl_Position = projection * view * model * vec4(position, 1.0);\n"
 "}\0";
 
 //Código fonte do Fragment Shader (em GLSL): ainda hardcoded
 const GLchar* fragmentShaderSource = "#version 450\n"
-"in vec4 vertexColor;\n"
 "in vec2 TexCoord;\n"
+"in vec3 FragPos;\n"
+"in vec3 Normal;\n"
 "\n"
 "out vec4 color;\n"
 "\n"
 "uniform sampler2D tex_buffer;\n"
 "\n"
+"uniform vec3 lightPos;\n"
+"uniform vec3 viewPos;\n"
+"uniform vec3 lightColor;\n"
+"\n"
+"uniform vec3 ka;\n"
+"uniform vec3 kd;\n"
+"uniform vec3 ks;\n"
+"uniform float shininess;\n"
+"\n"
 "void main()\n"
 "{\n"
-"color = texture(tex_buffer, TexCoord);\n"
+"vec3 texColor = texture(tex_buffer, TexCoord).rgb;\n"
+"\n"
+"vec3 ambient = ka * texColor;\n"
+"\n"
+"vec3 norm = normalize(Normal);\n"
+"vec3 lightDir = normalize(lightPos - FragPos);\n"
+"float diff = max(dot(norm, lightDir), 0.0);\n"
+"vec3 diffuse = kd * diff * texColor;\n"
+"\n"
+"vec3 viewDir = normalize(viewPos - FragPos);\n"
+"vec3 reflectDir = reflect(-lightDir, norm);\n"
+"float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);\n"
+"vec3 specular = ks * spec * lightColor;\n"
+"\n"
+"vec3 result = ambient + diffuse + specular;\n"
+"color = vec4(result, 1.0);\n"
 "}\n\0";
 
 bool rotateX=false, rotateY=false, rotateZ=false;
@@ -173,6 +202,14 @@ int main()
 
 
 	glUseProgram(shaderID);
+	glUniform3f(glGetUniformLocation(shaderID, "lightPos"), 2.0f, 2.0f, 2.0f);
+	glUniform3f(glGetUniformLocation(shaderID, "viewPos"), 0.0f, 0.0f, 3.0f);
+	glUniform3f(glGetUniformLocation(shaderID, "lightColor"), 1.0f, 1.0f, 1.0f);
+	glUniform3f(glGetUniformLocation(shaderID, "ka"), 0.2f, 0.2f, 0.2f);
+	glUniform3f(glGetUniformLocation(shaderID, "kd"), 0.8f, 0.8f, 0.8f);
+	glUniform3f(glGetUniformLocation(shaderID, "ks"), 1.0f, 1.0f, 1.0f);
+	glUniform1f(glGetUniformLocation(shaderID, "shininess"), 32.0f);
+
 	GLuint texID = loadTexture("../assets/tex/pixelWall.png");
 	glUniform1i(glGetUniformLocation(shaderID, "tex_buffer"), 0);
 	GLuint viewLoc = glGetUniformLocation(shaderID, "view");

@@ -91,9 +91,9 @@ int loadSimpleOBJ(string filePATH, int &nVertices)
             normals.push_back(normal);
         } 
         else if (word == "f")
-		 {
+        {
             while (ssline >> word) 
-			{
+            {
                 int vi = 0, ti = 0, ni = 0;
                 std::istringstream ss(word);
                 std::string index;
@@ -102,18 +102,32 @@ int loadSimpleOBJ(string filePATH, int &nVertices)
                 if (std::getline(ss, index, '/')) ti = !index.empty() ? std::stoi(index) - 1 : 0;
                 if (std::getline(ss, index)) ni = !index.empty() ? std::stoi(index) - 1 : 0;
 
+                // posição
                 vBuffer.push_back(vertices[vi].x);
                 vBuffer.push_back(vertices[vi].y);
                 vBuffer.push_back(vertices[vi].z);
 
+                // cor
                 vBuffer.push_back(color.r);
                 vBuffer.push_back(color.g);
                 vBuffer.push_back(color.b);
 
+                // UV
                 if (ti >= 0 && ti < texCoords.size()) {
                     vBuffer.push_back(texCoords[ti].x);
                     vBuffer.push_back(texCoords[ti].y);
                 } else {
+                    vBuffer.push_back(0.0f);
+                    vBuffer.push_back(0.0f);
+                }
+
+                // Normal
+                if (ni >= 0 && ni < normals.size()) {
+                    vBuffer.push_back(normals[ni].x);
+                    vBuffer.push_back(normals[ni].y);
+                    vBuffer.push_back(normals[ni].z);
+                } else {
+                    vBuffer.push_back(0.0f);
                     vBuffer.push_back(0.0f);
                     vBuffer.push_back(0.0f);
                 }
@@ -132,19 +146,26 @@ int loadSimpleOBJ(string filePATH, int &nVertices)
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+    // posição
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(GLfloat), (GLvoid*)0);
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+    // cor
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+    // UV
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 11 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
     glEnableVertexAttribArray(2);
+
+    // Normal
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 11 * sizeof(GLfloat), (GLvoid*)(8 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(3);
 
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
-    nVertices = vBuffer.size() / 8;
+    nVertices = vBuffer.size() / 11;
 
     return VAO;
  }
