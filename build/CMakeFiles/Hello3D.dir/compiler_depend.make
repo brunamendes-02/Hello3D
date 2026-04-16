@@ -520,7 +520,8 @@ CMakeFiles/Hello3D.dir/src/Hello3D.cpp.o: ../src/Hello3D.cpp \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/emmintrin.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/xmmintrin.h \
   /usr/lib/gcc/x86_64-linux-gnu/11/include/mmintrin.h \
-  /usr/lib/gcc/x86_64-linux-gnu/11/include/mm_malloc.h
+  /usr/lib/gcc/x86_64-linux-gnu/11/include/mm_malloc.h \
+  ../src/Camera.h
 
 CMakeFiles/Hello3D.dir/src/LoadSimpleOBJ.cpp.o: ../src/LoadSimpleOBJ.cpp \
   /usr/include/stdc-predef.h \
@@ -1378,6 +1379,8 @@ _deps/glm-src/glm/ext/scalar_int_sized.hpp:
 _deps/glm-src/glm/common.hpp:
 
 /usr/include/x86_64-linux-gnu/bits/types/struct_itimerspec.h:
+
+../src/Camera.h:
 
 /usr/include/c++/11/bits/ios_base.h:
 

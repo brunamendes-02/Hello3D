@@ -403,4 +403,5 @@ CMakeFiles/Hello3D.dir/src/Hello3D.cpp.o: \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/emmintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/xmmintrin.h \
  /usr/lib/gcc/x86_64-linux-gnu/11/include/mmintrin.h \
- /usr/lib/gcc/x86_64-linux-gnu/11/include/mm_malloc.h
+ /usr/lib/gcc/x86_64-linux-gnu/11/include/mm_malloc.h \
+ /home/bruna/Documentos/Unisinos/8º\ Semestre/Computação\ Gráfica/Hello3D/src/Camera.h
