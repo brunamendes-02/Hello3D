@@ -40,6 +40,12 @@ float lastFrame = 0.0f;
 
 glm::vec3 position(0.0f, 0.0f, 0.0f);
 float scaleFactor = 0.5f;
+struct Trajectory
+{
+    std::vector<glm::vec3> points;
+    int currentTarget;
+    float speed;
+};
 
 void processInput(GLFWwindow *window)
 {
@@ -235,6 +241,41 @@ int main()
 		glm::vec3(-1.5f, 0.0f, 0.0f)
 	};
 
+	std::vector<Trajectory> trajectories =
+	{
+		{
+			{
+				glm::vec3(-2.0f, 0.0f, 0.0f),
+				glm::vec3(-2.0f, 1.0f, 0.0f),
+				glm::vec3(-1.0f, 1.0f, 0.0f),
+				glm::vec3(-1.0f, 0.0f, 0.0f)
+			},
+			0,
+			1.0f
+		},
+
+		{
+			{
+				glm::vec3(0.0f, 0.0f, 0.0f),
+				glm::vec3(0.0f, 1.5f, 0.0f),
+				glm::vec3(1.0f, 0.0f, 0.0f)
+			},
+			0,
+			1.2f
+		},
+
+		{
+			{
+				glm::vec3(2.0f, 0.0f, 0.0f),
+				glm::vec3(2.0f, 0.0f, -2.0f),
+				glm::vec3(2.0f, 1.0f, -2.0f),
+				glm::vec3(2.0f, 1.0f, 0.0f)
+			},
+			0,
+			0.8f
+		}
+	};
+
 
 	glUseProgram(shaderID);
 	glUniform3f(glGetUniformLocation(shaderID, "lightPos"), 0.0f, 0.0f, 3.0f);
@@ -288,13 +329,38 @@ int main()
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texID);
 
+
+		for (int i = 0; i < cubePositions.size(); i++)
+		{
+			Trajectory& traj = trajectories[i];
+
+			glm::vec3 target = traj.points[traj.currentTarget];
+
+			glm::vec3 direction = target - cubePositions[i];
+
+			float distance = glm::length(direction);
+
+			if (distance < 0.05f)
+			{
+				traj.currentTarget++;
+
+				if (traj.currentTarget >= traj.points.size())
+					traj.currentTarget = 0;
+			}
+			else
+			{
+				direction = glm::normalize(direction);
+
+				cubePositions[i] += direction * traj.speed * deltaTime;
+			}
+		}
 		glBindVertexArray(VAO);
 
 		for (auto pos : cubePositions)
 		{
 			glm::mat4 model = glm::mat4(1);
 
-			model = glm::translate(model, pos + position);
+			model = glm::translate(model, pos);
 
 			// Rotação
 			if (rotateX)
@@ -354,20 +420,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		rotateZ = true;
 	}
 
-	float step = 0.1f;
+	if (key == GLFW_KEY_LEFT_BRACKET && action == GLFW_PRESS)
+		scaleFactor -= 0.1f;
 
-	if (key == GLFW_KEY_W && action == GLFW_PRESS) position.z -= step;
-	if (key == GLFW_KEY_S && action == GLFW_PRESS) position.z += step;
-	if (key == GLFW_KEY_A && action == GLFW_PRESS) position.x -= step;
-	if (key == GLFW_KEY_D && action == GLFW_PRESS) position.x += step;
+	if (key == GLFW_KEY_RIGHT_BRACKET && action == GLFW_PRESS)
+		scaleFactor += 0.1f;
 
-	if (key == GLFW_KEY_I && action == GLFW_PRESS) position.y += step;
-	if (key == GLFW_KEY_J && action == GLFW_PRESS) position.y -= step;
-
-	if (key == GLFW_KEY_LEFT_BRACKET && action == GLFW_PRESS) scaleFactor -= 0.1f;
-	if (key == GLFW_KEY_RIGHT_BRACKET && action == GLFW_PRESS) scaleFactor += 0.1f;
-
-	if (scaleFactor < 0.1f) scaleFactor = 0.1f;
+	if (scaleFactor < 0.1f)
+		scaleFactor = 0.1f;
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
