@@ -24,9 +24,21 @@ using namespace std;
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "../Code snippets/LoadSimpleOBJ.cpp"
 
 glm::vec3 position(0.0f, 0.0f, 0.0f);
 float scaleFactor = 1.0f;
+struct Object3D
+{
+	GLuint VAO;
+	int nVertices;
+
+	glm::vec3 position;
+	glm::vec3 rotation;
+	glm::vec3 scale;
+};
+
+std::vector<Object3D> objects;
 
 // Protótipo da função de callback de teclado
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
@@ -63,6 +75,7 @@ const GLchar* fragmentShaderSource = "#version 450\n"
 "}\n\0";
 
 bool rotateX=false, rotateY=false, rotateZ=false;
+int selectedObject = 0;
 
 // Função MAIN
 int main()
@@ -112,14 +125,21 @@ int main()
 
 	// Compilando e buildando o programa de shader
 	GLuint shaderID = setupShader();
+	Object3D obj1;
+	obj1.VAO = loadSimpleOBJ("../assets/Modelos3D/Cube.obj", obj1.nVertices);
+	obj1.position = glm::vec3(-1.5f, 0.0f, 0.0f);
+	obj1.rotation = glm::vec3(0.0f);
+	obj1.scale = glm::vec3(0.3f);
 
-	// Gerando um buffer simples, com a geometria de um triângulo
-	GLuint VAO = setupGeometry();
-	std::vector<glm::vec3> cubePositions = {
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(1.5f, 0.0f, 0.0f),
-		glm::vec3(-1.5f, 0.0f, 0.0f)
-	};
+	objects.push_back(obj1);
+
+	Object3D obj2;
+	obj2.VAO = loadSimpleOBJ("../assets/Modelos3D/Suzanne.obj", obj2.nVertices);
+	obj2.position = glm::vec3(1.5f, 0.0f, 0.0f);
+	obj2.rotation = glm::vec3(0.0f);
+	obj2.scale = glm::vec3(0.3f);
+
+	objects.push_back(obj2);
 
 
 	glUseProgram(shaderID);
@@ -131,10 +151,12 @@ int main()
 
 	glEnable(GL_DEPTH_TEST);
 
-	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f));
+	glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -8.0f));
 	// Loop da aplicação - "game loop"
 	while (!glfwWindowShouldClose(window))
 	{
+		glfwPollEvents();
+
 		int width, height;
 		glfwGetFramebufferSize(window, &width, &height);
 
@@ -146,93 +168,98 @@ int main()
 		);
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-		glfwPollEvents();
 
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		float angle = (GLfloat)glfwGetTime();
-
-		glBindVertexArray(VAO);
-
-		for (auto pos : cubePositions)
+		for (int i = 0; i < objects.size(); i++)
 		{
-			glm::mat4 model = glm::mat4(1);
+			Object3D obj = objects[i];
 
-			model = glm::translate(model, pos + position);
+			glm::mat4 model = glm::mat4(1.0f);
 
-			// Rotação
-			if (rotateX)
-				model = glm::rotate(model, angle, glm::vec3(1,0,0));
-			else if (rotateY)
-				model = glm::rotate(model, angle, glm::vec3(0,1,0));
-			else if (rotateZ)
-				model = glm::rotate(model, angle, glm::vec3(0,0,1));
+			model = glm::translate(model, obj.position);
 
-			// Escala
-			model = glm::scale(model, glm::vec3(scaleFactor));
+
+			model = glm::rotate(
+				model,
+				glm::radians(obj.rotation.x),
+				glm::vec3(1.0f, 0.0f, 0.0f)
+			);
+
+			model = glm::rotate(
+				model,
+				glm::radians(obj.rotation.y),
+				glm::vec3(0.0f, 1.0f, 0.0f)
+			);
+
+			model = glm::rotate(
+				model,
+				glm::radians(obj.rotation.z),
+				glm::vec3(0.0f, 0.0f, 1.0f)
+			);
+
+
+			model = glm::scale(model, obj.scale);
 
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
-			glDrawArrays(GL_TRIANGLES, 0, 36);
+			glBindVertexArray(obj.VAO);
+
+			glDrawArrays(GL_TRIANGLES, 0, obj.nVertices);
 		}
 
 		glBindVertexArray(0);
 
 		glfwSwapBuffers(window);
 	}
-
-
-	// Pede pra OpenGL desalocar os buffers
-	glDeleteVertexArrays(1, &VAO);
 	// Finaliza a execução da GLFW, limpando os recursos alocados por ela
 	glfwTerminate();
 	return 0;
 }
 
-// Função de callback de teclado - só pode ter uma instância (deve ser estática se
-// estiver dentro de uma classe) - É chamada sempre que uma tecla for pressionada
-// ou solta via GLFW
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 
-	if (key == GLFW_KEY_X && action == GLFW_PRESS)
+	if (key == GLFW_KEY_TAB && action == GLFW_PRESS)
 	{
-		rotateX = true;
-		rotateY = false;
-		rotateZ = false;
-	}
+		selectedObject++;
 
-	if (key == GLFW_KEY_Y && action == GLFW_PRESS)
-	{
-		rotateX = false;
-		rotateY = true;
-		rotateZ = false;
-	}
-
-	if (key == GLFW_KEY_Z && action == GLFW_PRESS)
-	{
-		rotateX = false;
-		rotateY = false;
-		rotateZ = true;
+		if (selectedObject >= objects.size())
+			selectedObject = 0;
 	}
 
 	float step = 0.1f;
 
-	if (key == GLFW_KEY_W && action == GLFW_PRESS) position.z -= step;
-	if (key == GLFW_KEY_S && action == GLFW_PRESS) position.z += step;
-	if (key == GLFW_KEY_A && action == GLFW_PRESS) position.x -= step;
-	if (key == GLFW_KEY_D && action == GLFW_PRESS) position.x += step;
 
-	if (key == GLFW_KEY_I && action == GLFW_PRESS) position.y += step;
-	if (key == GLFW_KEY_J && action == GLFW_PRESS) position.y -= step;
+	if (key == GLFW_KEY_W && action == GLFW_PRESS)
+		objects[selectedObject].position.z -= step;
 
-	if (key == GLFW_KEY_LEFT_BRACKET && action == GLFW_PRESS) scaleFactor -= 0.1f;
-	if (key == GLFW_KEY_RIGHT_BRACKET && action == GLFW_PRESS) scaleFactor += 0.1f;
+	if (key == GLFW_KEY_S && action == GLFW_PRESS)
+		objects[selectedObject].position.z += step;
 
-	if (scaleFactor < 0.1f) scaleFactor = 0.1f;
+	if (key == GLFW_KEY_A && action == GLFW_PRESS)
+		objects[selectedObject].position.x -= step;
+
+	if (key == GLFW_KEY_D && action == GLFW_PRESS)
+		objects[selectedObject].position.x += step;
+
+	if (key == GLFW_KEY_Q && action == GLFW_PRESS)
+		objects[selectedObject].position.y += step;
+
+	if (key == GLFW_KEY_E && action == GLFW_PRESS)
+		objects[selectedObject].position.y -= step;
+
+
+	if (key == GLFW_KEY_R && action == GLFW_PRESS)
+		objects[selectedObject].rotation.y += 10.0f;
+
+	if (key == GLFW_KEY_Z && action == GLFW_PRESS)
+		objects[selectedObject].scale += glm::vec3(0.1f);
+	if (key == GLFW_KEY_X && action == GLFW_PRESS)
+		objects[selectedObject].scale -= glm::vec3(0.1f);
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)

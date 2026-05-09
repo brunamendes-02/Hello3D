@@ -513,8 +513,28 @@ CMakeFiles/Hello3D.dir/src/Hello3D.cpp.o: ../src/Hello3D.cpp \
   /usr/include/c++/11/cstring \
   /usr/include/string.h \
   /usr/include/strings.h \
-  _deps/glm-src/glm/gtc/type_ptr.inl
+  _deps/glm-src/glm/gtc/type_ptr.inl \
+  ../Code\ snippets/LoadSimpleOBJ.cpp \
+  /usr/include/c++/11/fstream \
+  /usr/include/c++/11/bits/codecvt.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
+  /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
+  /usr/include/c++/11/bits/fstream.tcc \
+  /usr/include/c++/11/sstream \
+  /usr/include/c++/11/bits/sstream.tcc
 
+
+/usr/include/c++/11/sstream:
+
+/usr/include/c++/11/bits/fstream.tcc:
+
+/usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h:
+
+/usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h:
+
+/usr/include/c++/11/fstream:
+
+../Code\ snippets/LoadSimpleOBJ.cpp:
 
 _deps/glm-src/glm/ext/vector_uint1_sized.hpp:
 
@@ -1242,6 +1262,8 @@ _deps/glm-src/glm/ext/vector_bool2_precision.hpp:
 
 /usr/include/c++/11/bits/locale_facets.tcc:
 
+/usr/include/c++/11/bits/codecvt.h:
+
 _deps/glm-src/glm/ext/quaternion_double_precision.hpp:
 
 _deps/glm-src/glm/ext/matrix_float2x2_precision.hpp:
@@ -1333,6 +1355,8 @@ _deps/glm-src/glm/ext/vector_uint3.hpp:
 /usr/include/c++/11/tr1/riemann_zeta.tcc:
 
 _deps/glm-src/glm/detail/setup.hpp:
+
+/usr/include/c++/11/bits/sstream.tcc:
 
 /usr/include/c++/11/new:
 

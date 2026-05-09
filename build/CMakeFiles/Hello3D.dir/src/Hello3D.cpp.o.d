@@ -397,4 +397,10 @@ CMakeFiles/Hello3D.dir/src/Hello3D.cpp.o: \
  /home/bruna/Documentos/Unisinos/8º\ Semestre/Computação\ Gráfica/Hello3D/build/_deps/glm-src/glm/gtc/../gtc/../ext/vector_uint1.hpp \
  /home/bruna/Documentos/Unisinos/8º\ Semestre/Computação\ Gráfica/Hello3D/build/_deps/glm-src/glm/gtc/../gtc/../ext/vector_uint1_sized.hpp \
  /usr/include/c++/11/cstring /usr/include/string.h /usr/include/strings.h \
- /home/bruna/Documentos/Unisinos/8º\ Semestre/Computação\ Gráfica/Hello3D/build/_deps/glm-src/glm/gtc/type_ptr.inl
+ /home/bruna/Documentos/Unisinos/8º\ Semestre/Computação\ Gráfica/Hello3D/build/_deps/glm-src/glm/gtc/type_ptr.inl \
+ /home/bruna/Documentos/Unisinos/8º\ Semestre/Computação\ Gráfica/Hello3D/src/../Code\ snippets/LoadSimpleOBJ.cpp \
+ /usr/include/c++/11/fstream /usr/include/c++/11/bits/codecvt.h \
+ /usr/include/x86_64-linux-gnu/c++/11/bits/basic_file.h \
+ /usr/include/x86_64-linux-gnu/c++/11/bits/c++io.h \
+ /usr/include/c++/11/bits/fstream.tcc /usr/include/c++/11/sstream \
+ /usr/include/c++/11/bits/sstream.tcc
