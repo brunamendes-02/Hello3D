@@ -67,7 +67,6 @@ const GLchar* vertexShaderSource = "#version 450\n"
 "gl_Position = projection * view * model * vec4(position, 1.0);\n"
 "}\0";
 
-//Código fonte do Fragment Shader (em GLSL): ainda hardcoded
 const GLchar* fragmentShaderSource = "#version 450\n"
 "in vec2 TexCoord;\n"
 "in vec3 FragPos;\n"
@@ -77,7 +76,18 @@ const GLchar* fragmentShaderSource = "#version 450\n"
 "\n"
 "uniform sampler2D tex_buffer;\n"
 "\n"
-"uniform vec3 lightPos;\n"
+"uniform vec3 keyLightPos;\n"
+"uniform vec3 fillLightPos;\n"
+"uniform vec3 backLightPos;\n"
+"\n"
+"uniform vec3 keyIntensity;\n"
+"uniform vec3 fillIntensity;\n"
+"uniform vec3 backIntensity;\n"
+"\n"
+"uniform bool keyLightEnabled;\n"
+"uniform bool fillLightEnabled;\n"
+"uniform bool backLightEnabled;\n"
+"\n"
 "uniform vec3 viewPos;\n"
 "uniform vec3 lightColor;\n"
 "\n"
@@ -93,12 +103,38 @@ const GLchar* fragmentShaderSource = "#version 450\n"
 "vec3 ambient = ka * texColor;\n"
 "\n"
 "vec3 norm = normalize(Normal);\n"
-"vec3 lightDir = normalize(lightPos - FragPos);\n"
+"\n"
+"vec3 diffuse = vec3(0.0);\n"
+"\n"
+"if(keyLightEnabled)\n"
+"{\n"
+"vec3 lightDir = normalize(keyLightPos - FragPos);\n"
+"float distance = length(keyLightPos - FragPos);\n"
+"float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * distance * distance);\n"
 "float diff = max(dot(norm, lightDir), 0.0);\n"
-"vec3 diffuse = kd * diff * texColor;\n"
+"diffuse += kd * diff * texColor * attenuation * keyIntensity;\n"
+"}\n"
+"\n"
+"if(fillLightEnabled)\n"
+"{\n"
+"vec3 lightDir = normalize(fillLightPos - FragPos);\n"
+"float distance = length(fillLightPos - FragPos);\n"
+"float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * distance * distance);\n"
+"float diff = max(dot(norm, lightDir), 0.0);\n"
+"diffuse += kd * diff * texColor * attenuation * fillIntensity;\n"
+"}\n"
+"\n"
+"if(backLightEnabled)\n"
+"{\n"
+"vec3 lightDir = normalize(backLightPos - FragPos);\n"
+"float distance = length(backLightPos - FragPos);\n"
+"float attenuation = 1.0 / (1.0 + 0.09 * distance + 0.032 * distance * distance);\n"
+"float diff = max(dot(norm, lightDir), 0.0);\n"
+"diffuse += kd * diff * texColor * attenuation * backIntensity;\n"
+"}\n"
 "\n"
 "vec3 viewDir = normalize(viewPos - FragPos);\n"
-"vec3 reflectDir = reflect(-lightDir, norm);\n"
+"vec3 reflectDir = reflect(-normalize(keyLightPos - FragPos), norm);\n"
 "float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);\n"
 "vec3 specular = ks * spec * lightColor;\n"
 "\n"
@@ -107,6 +143,9 @@ const GLchar* fragmentShaderSource = "#version 450\n"
 "}\n\0";
 
 bool rotateX=false, rotateY=false, rotateZ=false;
+bool keyLightEnabled = true;
+bool fillLightEnabled = true;
+bool backLightEnabled = true;
 
 GLuint loadTexture(const std::string& path)
 {
@@ -202,7 +241,19 @@ int main()
 
 
 	glUseProgram(shaderID);
-	glUniform3f(glGetUniformLocation(shaderID, "lightPos"), 0.0f, 0.0f, 3.0f);
+
+	// Luz principal
+	glUniform3f(glGetUniformLocation(shaderID, "keyLightPos"), 3.0f, 2.0f, 3.0f);
+	glUniform3f(glGetUniformLocation(shaderID, "keyIntensity"), 1.0f, 1.0f, 1.0f);
+
+	// Luz de preenchimento
+	glUniform3f(glGetUniformLocation(shaderID, "fillLightPos"), -3.0f, 1.0f, 2.0f);
+	glUniform3f(glGetUniformLocation(shaderID, "fillIntensity"), 0.4f, 0.4f, 0.4f);
+
+	// Luz de fundo
+	glUniform3f(glGetUniformLocation(shaderID, "backLightPos"), 0.0f, 2.0f, -3.0f);
+	glUniform3f(glGetUniformLocation(shaderID, "backIntensity"), 5.0f, 5.0f, 5.0f);
+
 	glUniform3f(glGetUniformLocation(shaderID, "viewPos"), 0.0f, 0.0f, 3.0f);
 	glUniform3f(glGetUniformLocation(shaderID, "lightColor"), 1.0f, 1.0f, 1.0f);
 	glUniform3f(glGetUniformLocation(shaderID, "ka"), 0.2f, 0.2f, 0.2f);
@@ -236,6 +287,20 @@ int main()
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 		glfwPollEvents();
+		glUniform1i(
+			glGetUniformLocation(shaderID, "keyLightEnabled"),
+			keyLightEnabled
+		);
+
+		glUniform1i(
+			glGetUniformLocation(shaderID, "fillLightEnabled"),
+			fillLightEnabled
+		);
+
+		glUniform1i(
+			glGetUniformLocation(shaderID, "backLightEnabled"),
+			backLightEnabled
+		);
 
 		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -324,6 +389,20 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_RIGHT_BRACKET && action == GLFW_PRESS) scaleFactor += 0.1f;
 
 	if (scaleFactor < 0.1f) scaleFactor = 0.1f;
+
+	if (key == GLFW_KEY_2 && action == GLFW_PRESS)
+		fillLightEnabled = !fillLightEnabled;
+
+	if (key == GLFW_KEY_3 && action == GLFW_PRESS)
+		backLightEnabled = !backLightEnabled;
+
+	if (key == GLFW_KEY_1 && action == GLFW_PRESS)
+	{
+		keyLightEnabled = !keyLightEnabled;
+		std::cout << "Key Light: "
+				<< (keyLightEnabled ? "ON" : "OFF")
+				<< std::endl;
+	}
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
