@@ -42,6 +42,9 @@ glm::vec3 position(0.0f, 0.0f, 0.0f);
 float scaleFactor = 0.5f;
 bool animationEnabled = true;
 bool textureEnabled = true;
+bool keyLightEnabled = true;
+bool fillLightEnabled = true;
+bool backLightEnabled = true;
 
 struct Trajectory
 {
@@ -141,7 +144,14 @@ const GLchar* fragmentShaderSource = "#version 450\n"
 "uniform sampler2D tex_buffer;\n"
 "uniform bool textureEnabled;\n"
 "\n"
-"uniform vec3 lightPos;\n"
+"uniform vec3 keyLightPos;\n"
+"uniform vec3 fillLightPos;\n"
+"uniform vec3 backLightPos;\n"
+"\n"
+"uniform bool keyLightEnabled;\n"
+"uniform bool fillLightEnabled;\n"
+"uniform bool backLightEnabled;\n"
+"\n"
 "uniform vec3 viewPos;\n"
 "uniform vec3 lightColor;\n"
 "\n"
@@ -166,12 +176,32 @@ const GLchar* fragmentShaderSource = "#version 450\n"
 "vec3 ambient = ka * texColor;\n"
 "\n"
 "vec3 norm = normalize(Normal);\n"
-"vec3 lightDir = normalize(lightPos - FragPos);\n"
+"\n"
+"vec3 diffuse = vec3(0.0);\n"
+"\n"
+"if(keyLightEnabled)\n"
+"{\n"
+"vec3 lightDir = normalize(keyLightPos - FragPos);\n"
 "float diff = max(dot(norm, lightDir), 0.0);\n"
-"vec3 diffuse = kd * diff * texColor;\n"
+"diffuse += kd * diff * texColor;\n"
+"}\n"
+"\n"
+"if(fillLightEnabled)\n"
+"{\n"
+"vec3 lightDir = normalize(fillLightPos - FragPos);\n"
+"float diff = max(dot(norm, lightDir), 0.0);\n"
+"diffuse += kd * diff * texColor * 0.4;\n"
+"}\n"
+"\n"
+"if(backLightEnabled)\n"
+"{\n"
+"vec3 lightDir = normalize(backLightPos - FragPos);\n"
+"float diff = max(dot(norm, lightDir), 0.0);\n"
+"diffuse += kd * diff * texColor * 0.4;\n"
+"}\n"
 "\n"
 "vec3 viewDir = normalize(viewPos - FragPos);\n"
-"vec3 reflectDir = reflect(-lightDir, norm);\n"
+"vec3 reflectDir = reflect(-normalize(keyLightPos - FragPos), norm);\n"
 "float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);\n"
 "vec3 specular = ks * spec * lightColor;\n"
 "\n"
@@ -318,7 +348,20 @@ int main()
 		glGetUniformLocation(shaderID, "textureEnabled"),
 		textureEnabled
 	);
-	glUniform3f(glGetUniformLocation(shaderID, "lightPos"), 0.0f, 0.0f, 3.0f);
+	glUniform3f(
+		glGetUniformLocation(shaderID, "keyLightPos"),
+		3.0f, 2.0f, 3.0f
+	);
+
+	glUniform3f(
+		glGetUniformLocation(shaderID, "fillLightPos"),
+		-3.0f, 1.0f, 2.0f
+	);
+
+	glUniform3f(
+		glGetUniformLocation(shaderID, "backLightPos"),
+		0.0f, 1.5f, -1.5f
+	);
 	glUniform3f(glGetUniformLocation(shaderID, "viewPos"), 0.0f, 0.0f, 3.0f);
 	glUniform3f(glGetUniformLocation(shaderID, "lightColor"), 1.0f, 1.0f, 1.0f);
 	glUniform3f(glGetUniformLocation(shaderID, "ka"), 0.2f, 0.2f, 0.2f);
@@ -349,6 +392,20 @@ int main()
 
 		glfwPollEvents();
 		glUseProgram(shaderID);
+		glUniform1i(
+			glGetUniformLocation(shaderID, "keyLightEnabled"),
+			keyLightEnabled
+		);
+
+		glUniform1i(
+			glGetUniformLocation(shaderID, "fillLightEnabled"),
+			fillLightEnabled
+		);
+
+		glUniform1i(
+			glGetUniformLocation(shaderID, "backLightEnabled"),
+			backLightEnabled
+		);
 
 		glUniform1i(
 			glGetUniformLocation(shaderID, "textureEnabled"),
@@ -368,7 +425,7 @@ int main()
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		float angle = (GLfloat)glfwGetTime();
@@ -460,21 +517,24 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 
+	if (key == GLFW_KEY_TAB && action == GLFW_PRESS)
+	{
+		selectedObject++;
+
+		if (selectedObject >= objects.size())
+			selectedObject = 0;
+	}
+
 	if (key == GLFW_KEY_X && action == GLFW_PRESS)
-	{
 		objects[selectedObject].rotation.x += 10.0f;
-	}
-
 	if (key == GLFW_KEY_Y && action == GLFW_PRESS)
-	{
 		objects[selectedObject].rotation.y += 10.0f;
-	}
-
 	if (key == GLFW_KEY_Z && action == GLFW_PRESS)
-	{
 		objects[selectedObject].rotation.z += 10.0f;
-	}
 
+
+	if (key == GLFW_KEY_E && action == GLFW_PRESS)
+		objects[selectedObject].scale += 0.1f;
 	if (key == GLFW_KEY_Q && action == GLFW_PRESS)
 	{
 		objects[selectedObject].scale -= 0.1f;
@@ -483,56 +543,28 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			objects[selectedObject].scale = 0.1f;
 	}
 
-	if (key == GLFW_KEY_E && action == GLFW_PRESS)
-	{
-		objects[selectedObject].scale += 0.1f;
-	}
-
-	if (key == GLFW_KEY_TAB && action == GLFW_PRESS)
-	{
-		selectedObject++;
-
-		if (selectedObject >= objects.size())
-			selectedObject = 0;
-
-		std::cout << "Objeto selecionado: "
-				<< selectedObject
-				<< std::endl;
-	}
-
 	float step = 0.2f;
-
 	if (key == GLFW_KEY_I && action == GLFW_PRESS)
 		objects[selectedObject].position.y += step;
-
 	if (key == GLFW_KEY_K && action == GLFW_PRESS)
 		objects[selectedObject].position.y -= step;
-
 	if (key == GLFW_KEY_J && action == GLFW_PRESS)
 		objects[selectedObject].position.x -= step;
-
 	if (key == GLFW_KEY_L && action == GLFW_PRESS)
 		objects[selectedObject].position.x += step;
 
 	if (key == GLFW_KEY_P && action == GLFW_PRESS)
-	{
 		animationEnabled = !animationEnabled;
 
-		std::cout
-			<< "Animacao: "
-			<< (animationEnabled ? "ON" : "OFF")
-			<< std::endl;
-	}
 	if (key == GLFW_KEY_T && action == GLFW_PRESS)
-	{
 		textureEnabled = !textureEnabled;
 
-		std::cout
-			<< "Textura: "
-			<< (textureEnabled ? "ON" : "OFF")
-			<< std::endl;
-	}
-
+	if (key == GLFW_KEY_1 && action == GLFW_PRESS)
+		keyLightEnabled = !keyLightEnabled;
+	if (key == GLFW_KEY_2 && action == GLFW_PRESS)
+		fillLightEnabled = !fillLightEnabled;
+	if (key == GLFW_KEY_3 && action == GLFW_PRESS)
+		backLightEnabled = !backLightEnabled;
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
