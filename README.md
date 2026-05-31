@@ -1,48 +1,51 @@
-# Computação Gráfica - Híbrido
-
-Repositório de exemplos de códigos em C++ utilizando OpenGL moderna (3.3+) criado para a Atividade Acadêmica Computação Gráfica do curso de graduação em Ciência da Computação - modalidade híbrida - da Unisinos. Ele é estruturado para facilitar a organização dos arquivos e a compilação dos projetos utilizando CMake.
-
-## 📂 Estrutura do Repositório
-
-```plaintext
-📂 CGCCHibrido/
-├── 📂 include/               # Cabeçalhos e bibliotecas de terceiros
-│   ├── 📂 glad/              # Cabeçalhos da GLAD (OpenGL Loader)
-│   │   ├── glad.h
-│   │   ├── 📂 KHR/           # Diretório com cabeçalhos da Khronos (GLAD)
-│   │       ├── khrplatform.h
-├── 📂 common/                # Código reutilizável entre os projetos
-│   ├── glad.c                # Implementação da GLAD
-├── 📂 src/                   # Código-fonte dos exemplos e exercícios
-│   ├── Hello3D.cpp           # Exemplo básico de renderização com OpenGL
-│   ├── ...                   # Outros exemplos e exercícios futuros
-├── 📂 build/                 # Diretório gerado pelo CMake (não incluído no repositório)
-├── 📂 assets/                # diretório com modelos 3D, texturas, fontes etc
-├── 📄 CMakeLists.txt         # Configuração do CMake para compilar os projetos
-├── 📄 README.md              # Este arquivo, com a documentação do repositório
-├── 📄 GettingStarted.md      # Tutorial detalhado sobre como compilar usando o CMake
-```
-
-Siga as instruções detalhadas em [GettingStarted.md](GettingStarted.md) para configurar e compilar o projeto.
-
-## ⚠️ **IMPORTANTE: Baixar a GLAD Manualmente**
-Para que o projeto funcione corretamente, é necessário **baixar a GLAD manualmente** utilizando o **GLAD Generator**.
-
-### 🔗 **Acesse o web service do GLAD**:
-👉 [GLAD Generator](https://glad.dav1d.de/)
-
-### ⚙️ **Configuração necessária:**
-- **API:** OpenGL  
-- **Version:** 3.3+ (ou superior compatível com sua máquina)  
-- **Profile:** Core  
-- **Language:** C/C++  
-
-### 📥 **Baixe e extraia os arquivos:**
-Após a geração, extraia os arquivos baixados e coloque-os nos diretórios correspondentes:
-- Copie **`glad.h`** para `include/glad/`
-- Copie **`khrplatform.h`** para `include/glad/KHR/`
-- Copie **`glad.c`** para `common/`
-
-🚨 **Sem esses arquivos, a compilação falhará!** É necessário colocar esses arquivos nos diretórios corretos, conforme a orientação acima.
-
 # Hello3D
+
+## Funcionalidades Implementadas
+O projeto Hello3D consiste em um visualizador 3D desenvolvido em C++ utilizando OpenGL moderna. Durante o semestre, foram implementados progressivamente diversos conceitos fundamentais da Computação Gráfica, integrados em uma única aplicação.
+
+### Recursos implementados
+- Leitura e renderização de modelos 3D no formato Wavefront OBJ;
+- Aplicação de texturas em modelos tridimensionais;
+- Implementação do modelo de iluminação de Phong;
+- Utilização de múltiplas fontes de luz (esquema de iluminação em três pontos);
+- Habilitação e desabilitação individual das fontes de luz;
+- Controle de câmera em primeira pessoa utilizando teclado e mouse;
+- Seleção de objetos da cena;
+- Transformações geométricas (translação, rotação e escala) aplicadas ao objeto selecionado;
+- Trajetórias animadas para os objetos da cena;
+- Controle de início e pausa das animações;
+- Movimentação baseada em curvas paramétricas de Bézier;
+- Utilização de shaders programáveis (Vertex Shader e Fragment Shader).
+
+## Assets
+
+### Modelos 3D
+
+Os modelos utilizados no projeto foram obtidos a partir do repositório disponibilizado para a disciplina:
+
+https://github.com/guilhermechagaskurtz/CGCCHibrido
+
+Modelos utilizados:
+
+- Cube.obj
+
+### Texturas
+
+As texturas utilizadas no projeto foram obtidas a partir da plataforma AmbientCG:
+
+https://ambientcg.com/
+
+A textura utilizada foi adaptada para fins educacionais e empregada no mapeamento de textura dos objetos da cena.
+
+### Ferramentas de Processamento
+Durante o desenvolvimento do projeto foram utilizados softwares de apoio para visualização e manipulação de modelos tridimensionais:
+- Blender
+- MeshLab
+
+## Referências
+- OpenGL Documentation: https://www.opengl.org/documentation/
+- GLFW Documentation: https://www.glfw.org/documentation.html
+- GLM Documentation: https://github.com/g-truc/glm
+- stb_image: https://github.com/nothings/stb
+- GLAD Loader Generator: https://glad.dav1d.de/
+- Material de apoio disponibilizado na disciplina de Computação Gráfica da Unisinos.
