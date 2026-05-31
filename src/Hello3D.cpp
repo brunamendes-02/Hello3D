@@ -41,6 +41,7 @@ float lastFrame = 0.0f;
 glm::vec3 position(0.0f, 0.0f, 0.0f);
 float scaleFactor = 0.5f;
 bool animationEnabled = true;
+bool textureEnabled = true;
 
 struct Trajectory
 {
@@ -137,8 +138,8 @@ const GLchar* fragmentShaderSource = "#version 450\n"
 "in vec3 Normal;\n"
 "\n"
 "out vec4 color;\n"
-"\n"
 "uniform sampler2D tex_buffer;\n"
+"uniform bool textureEnabled;\n"
 "\n"
 "uniform vec3 lightPos;\n"
 "uniform vec3 viewPos;\n"
@@ -151,7 +152,16 @@ const GLchar* fragmentShaderSource = "#version 450\n"
 "\n"
 "void main()\n"
 "{\n"
-"vec3 texColor = texture(tex_buffer, TexCoord).rgb;\n"
+"vec3 texColor;\n"
+"\n"
+"if(textureEnabled)\n"
+"{\n"
+"    texColor = texture(tex_buffer, TexCoord).rgb;\n"
+"}\n"
+"else\n"
+"{\n"
+"    texColor = vec3(1.0, 1.0, 1.0);\n"
+"}\n"
 "\n"
 "vec3 ambient = ka * texColor;\n"
 "\n"
@@ -242,6 +252,7 @@ int main()
 
 	// Compilando e buildando o programa de shader
 	GLuint shaderID = setupShader();
+	glUseProgram(shaderID);
 
 	// Gerando um buffer simples, com a geometria de um triângulo
 	// GLuint VAO = setupGeometry();
@@ -303,7 +314,10 @@ int main()
 		}
 	};
 
-	glUseProgram(shaderID);
+	glUniform1i(
+		glGetUniformLocation(shaderID, "textureEnabled"),
+		textureEnabled
+	);
 	glUniform3f(glGetUniformLocation(shaderID, "lightPos"), 0.0f, 0.0f, 3.0f);
 	glUniform3f(glGetUniformLocation(shaderID, "viewPos"), 0.0f, 0.0f, 3.0f);
 	glUniform3f(glGetUniformLocation(shaderID, "lightColor"), 1.0f, 1.0f, 1.0f);
@@ -334,6 +348,12 @@ int main()
 		processInput(window);
 
 		glfwPollEvents();
+		glUseProgram(shaderID);
+
+		glUniform1i(
+			glGetUniformLocation(shaderID, "textureEnabled"),
+			textureEnabled
+		);
 
 		int width, height;
 		glfwGetFramebufferSize(window, &width, &height);
@@ -503,6 +523,16 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			<< (animationEnabled ? "ON" : "OFF")
 			<< std::endl;
 	}
+	if (key == GLFW_KEY_T && action == GLFW_PRESS)
+	{
+		textureEnabled = !textureEnabled;
+
+		std::cout
+			<< "Textura: "
+			<< (textureEnabled ? "ON" : "OFF")
+			<< std::endl;
+	}
+
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -510,7 +540,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-//Esta função está bastante hardcoded - objetivo é compilar e "buildar" um programa de
+// Esta função está bastante hardcoded - objetivo é compilar e "buildar" um programa de
 // shader simples e único neste exemplo de código
 // O código fonte do vertex e fragment shader está nos arrays vertexShaderSource e
 // fragmentShader source no inicio deste arquivo
