@@ -40,12 +40,24 @@ float lastFrame = 0.0f;
 
 glm::vec3 position(0.0f, 0.0f, 0.0f);
 float scaleFactor = 0.5f;
+bool animationEnabled = true;
+
 struct Trajectory
 {
     std::vector<glm::vec3> points;
     int currentTarget;
     float speed;
 };
+
+struct Object3D
+{
+	glm::vec3 position;
+	glm::vec3 rotation;
+	float scale;
+};
+
+std::vector<Object3D> objects;
+int selectedObject = 0;
 
 void processInput(GLFWwindow *window)
 {
@@ -235,10 +247,25 @@ int main()
 	// GLuint VAO = setupGeometry();
 	int nVertices;
 	GLuint VAO = loadSimpleOBJ("../assets/Modelos3D/Cube.obj", nVertices);
-	std::vector<glm::vec3> cubePositions = {
-		glm::vec3(0.0f, 0.0f, 0.0f),
-		glm::vec3(1.5f, 0.0f, 0.0f),
-		glm::vec3(-1.5f, 0.0f, 0.0f)
+	objects =
+	{
+		{
+			glm::vec3(0.0f, 0.0f, 0.0f),
+			glm::vec3(0.0f),
+			0.5f
+		},
+
+		{
+			glm::vec3(1.5f, 0.0f, 0.0f),
+			glm::vec3(0.0f),
+			0.5f
+		},
+
+		{
+			glm::vec3(-1.5f, 0.0f, 0.0f),
+			glm::vec3(0.0f),
+			0.5f
+		}
 	};
 
 	std::vector<Trajectory> trajectories =
@@ -275,7 +302,6 @@ int main()
 			0.8f
 		}
 	};
-
 
 	glUseProgram(shaderID);
 	glUniform3f(glGetUniformLocation(shaderID, "lightPos"), 0.0f, 0.0f, 3.0f);
@@ -330,48 +356,63 @@ int main()
 		glBindTexture(GL_TEXTURE_2D, texID);
 
 
-		for (int i = 0; i < cubePositions.size(); i++)
+		if(animationEnabled)
 		{
-			Trajectory& traj = trajectories[i];
-
-			glm::vec3 target = traj.points[traj.currentTarget];
-
-			glm::vec3 direction = target - cubePositions[i];
-
-			float distance = glm::length(direction);
-
-			if (distance < 0.05f)
+			for (int i = 0; i < objects.size(); i++)
 			{
-				traj.currentTarget++;
+				Trajectory& traj = trajectories[i];
 
-				if (traj.currentTarget >= traj.points.size())
-					traj.currentTarget = 0;
-			}
-			else
-			{
-				direction = glm::normalize(direction);
+				glm::vec3 target = traj.points[traj.currentTarget];
 
-				cubePositions[i] += direction * traj.speed * deltaTime;
+				glm::vec3 direction = target - objects[i].position;
+
+				float distance = glm::length(direction);
+
+				if (distance < 0.05f)
+				{
+					traj.currentTarget++;
+
+					if (traj.currentTarget >= traj.points.size())
+						traj.currentTarget = 0;
+				}
+				else
+				{
+					direction = glm::normalize(direction);
+
+					objects[i].position += direction * traj.speed * deltaTime;
+				}
 			}
 		}
+
 		glBindVertexArray(VAO);
 
-		for (auto pos : cubePositions)
+		for (int i = 0; i < objects.size(); i++)
 		{
 			glm::mat4 model = glm::mat4(1);
 
-			model = glm::translate(model, pos);
+			model = glm::translate(model, objects[i].position);
 
 			// Rotação
-			if (rotateX)
-				model = glm::rotate(model, angle, glm::vec3(1,0,0));
-			else if (rotateY)
-				model = glm::rotate(model, angle, glm::vec3(0,1,0));
-			else if (rotateZ)
-				model = glm::rotate(model, angle, glm::vec3(0,0,1));
+			model = glm::rotate(
+				model,
+				glm::radians(objects[i].rotation.x),
+				glm::vec3(1,0,0)
+			);
+
+			model = glm::rotate(
+				model,
+				glm::radians(objects[i].rotation.y),
+				glm::vec3(0,1,0)
+			);
+
+			model = glm::rotate(
+				model,
+				glm::radians(objects[i].rotation.z),
+				glm::vec3(0,0,1)
+			);
 
 			// Escala
-			model = glm::scale(model, glm::vec3(scaleFactor));
+			model = glm::scale(model, glm::vec3(objects[i].scale));
 
 			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
@@ -401,33 +442,67 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	if (key == GLFW_KEY_X && action == GLFW_PRESS)
 	{
-		rotateX = true;
-		rotateY = false;
-		rotateZ = false;
+		objects[selectedObject].rotation.x += 10.0f;
 	}
 
 	if (key == GLFW_KEY_Y && action == GLFW_PRESS)
 	{
-		rotateX = false;
-		rotateY = true;
-		rotateZ = false;
+		objects[selectedObject].rotation.y += 10.0f;
 	}
 
 	if (key == GLFW_KEY_Z && action == GLFW_PRESS)
 	{
-		rotateX = false;
-		rotateY = false;
-		rotateZ = true;
+		objects[selectedObject].rotation.z += 10.0f;
 	}
 
-	if (key == GLFW_KEY_LEFT_BRACKET && action == GLFW_PRESS)
-		scaleFactor -= 0.1f;
+	if (key == GLFW_KEY_Q && action == GLFW_PRESS)
+	{
+		objects[selectedObject].scale -= 0.1f;
 
-	if (key == GLFW_KEY_RIGHT_BRACKET && action == GLFW_PRESS)
-		scaleFactor += 0.1f;
+		if (objects[selectedObject].scale < 0.1f)
+			objects[selectedObject].scale = 0.1f;
+	}
 
-	if (scaleFactor < 0.1f)
-		scaleFactor = 0.1f;
+	if (key == GLFW_KEY_E && action == GLFW_PRESS)
+	{
+		objects[selectedObject].scale += 0.1f;
+	}
+
+	if (key == GLFW_KEY_TAB && action == GLFW_PRESS)
+	{
+		selectedObject++;
+
+		if (selectedObject >= objects.size())
+			selectedObject = 0;
+
+		std::cout << "Objeto selecionado: "
+				<< selectedObject
+				<< std::endl;
+	}
+
+	float step = 0.2f;
+
+	if (key == GLFW_KEY_I && action == GLFW_PRESS)
+		objects[selectedObject].position.y += step;
+
+	if (key == GLFW_KEY_K && action == GLFW_PRESS)
+		objects[selectedObject].position.y -= step;
+
+	if (key == GLFW_KEY_J && action == GLFW_PRESS)
+		objects[selectedObject].position.x -= step;
+
+	if (key == GLFW_KEY_L && action == GLFW_PRESS)
+		objects[selectedObject].position.x += step;
+
+	if (key == GLFW_KEY_P && action == GLFW_PRESS)
+	{
+		animationEnabled = !animationEnabled;
+
+		std::cout
+			<< "Animacao: "
+			<< (animationEnabled ? "ON" : "OFF")
+			<< std::endl;
+	}
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)

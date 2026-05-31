@@ -41,7 +41,7 @@ public:
 
         MovementSpeed = 2.5f;
         MouseSensitivity = 0.1f;
-        Zoom = 80.0f;
+        Zoom = 60.0f;
 
         updateCameraVectors();
     }
@@ -86,11 +86,13 @@ public:
 
     void ProcessMouseScroll(float yoffset)
     {
-        Zoom -= yoffset * 2.0f;
-        if (Zoom < 1.0f)
-            Zoom = 1.0f;
-        if (Zoom > 45.0f)
-            Zoom = 45.0f;
+        Zoom -= yoffset;
+
+        if (Zoom < 30.0f)
+            Zoom = 30.0f;
+
+        if (Zoom > 80.0f)
+            Zoom = 80.0f;
     }
 
 private:
