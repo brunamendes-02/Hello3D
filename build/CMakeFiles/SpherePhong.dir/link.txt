@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/SpherePhong.dir/src/SpherePhong.cpp.o CMakeFiles/SpherePhong.dir/src/LoadSimpleOBJ.cpp.o CMakeFiles/SpherePhong.dir/common/glad.c.o -o SpherePhong  _deps/glfw-build/src/libglfw3.a /usr/lib/x86_64-linux-gnu/libGL.so /usr/lib/x86_64-linux-gnu/librt.a -lm -ldl 

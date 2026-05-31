@@ -1,3 +1,0 @@
-/home/bruna/Documentos/Unisinos/8º Semestre/Computação Gráfica/Hello3D/build/_deps/glm-subbuild/CMakeFiles/glm-populate.dir
-/home/bruna/Documentos/Unisinos/8º Semestre/Computação Gráfica/Hello3D/build/_deps/glm-subbuild/CMakeFiles/edit_cache.dir
-/home/bruna/Documentos/Unisinos/8º Semestre/Computação Gráfica/Hello3D/build/_deps/glm-subbuild/CMakeFiles/rebuild_cache.dir

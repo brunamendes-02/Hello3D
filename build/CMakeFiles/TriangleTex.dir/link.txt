@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/TriangleTex.dir/src/TriangleTex.cpp.o CMakeFiles/TriangleTex.dir/src/LoadSimpleOBJ.cpp.o CMakeFiles/TriangleTex.dir/common/glad.c.o -o TriangleTex  _deps/glfw-build/src/libglfw3.a /usr/lib/x86_64-linux-gnu/libGL.so /usr/lib/x86_64-linux-gnu/librt.a -lm -ldl 
