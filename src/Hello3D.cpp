@@ -41,6 +41,8 @@ float lastFrame = 0.0f;
 glm::vec3 position(0.0f, 0.0f, 0.0f);
 float scaleFactor = 0.5f;
 bool animationEnabled = true;
+float bezierT = 0.0f;
+bool bezierForward = true;
 bool textureEnabled = true;
 bool keyLightEnabled = true;
 bool fillLightEnabled = true;
@@ -244,6 +246,22 @@ GLuint loadTexture(const std::string& path)
 	return texID;
 }
 
+glm::vec3 bezier(
+    float t,
+    glm::vec3 p0,
+    glm::vec3 p1,
+    glm::vec3 p2,
+    glm::vec3 p3)
+{
+    float u = 1.0f - t;
+
+    return
+        (u*u*u) * p0 +
+        (3*u*u*t) * p1 +
+        (3*u*t*t) * p2 +
+        (t*t*t) * p3;
+}
+
 // Função MAIN
 int main()
 {
@@ -435,29 +453,36 @@ int main()
 
 		if(animationEnabled)
 		{
-			for (int i = 0; i < objects.size(); i++)
+			if(bezierForward)
 			{
-				Trajectory& traj = trajectories[i];
+				bezierT += deltaTime * 0.2f;
 
-				glm::vec3 target = traj.points[traj.currentTarget];
-
-				glm::vec3 direction = target - objects[i].position;
-
-				float distance = glm::length(direction);
-
-				if (distance < 0.05f)
+				if(bezierT >= 1.0f)
 				{
-					traj.currentTarget++;
-
-					if (traj.currentTarget >= traj.points.size())
-						traj.currentTarget = 0;
+					bezierT = 1.0f;
+					bezierForward = false;
 				}
-				else
+			}
+			else
+			{
+				bezierT -= deltaTime * 0.2f;
+
+				if(bezierT <= 0.0f)
 				{
-					direction = glm::normalize(direction);
-
-					objects[i].position += direction * traj.speed * deltaTime;
+					bezierT = 0.0f;
+					bezierForward = true;
 				}
+			}
+
+			for(int i = 0; i < objects.size(); i++)
+			{
+				objects[i].position = bezier(
+					bezierT,
+					trajectories[i].points[0],
+					trajectories[i].points[1],
+					trajectories[i].points[2],
+					trajectories[i].points[3]
+				);
 			}
 		}
 
