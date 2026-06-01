@@ -20,22 +20,15 @@ O projeto Hello3D consiste em um visualizador 3D desenvolvido em C++ utilizando 
 ## Assets
 
 ### Modelos 3D
-
-Os modelos utilizados no projeto foram obtidos a partir do repositório disponibilizado para a disciplina:
-
+O modelo utilizados no projeto foram obtidos a partir do repositório disponibilizado para a disciplina:
 https://github.com/guilhermechagaskurtz/CGCCHibrido
 
-Modelos utilizados:
-
+Modelo utilizado:
 - Cube.obj
 
 ### Texturas
-
 As texturas utilizadas no projeto foram obtidas a partir da plataforma AmbientCG:
-
-https://ambientcg.com/
-
-A textura utilizada foi adaptada para fins educacionais e empregada no mapeamento de textura dos objetos da cena.
+- https://ambientcg.com/
 
 ### Ferramentas de Processamento
 Durante o desenvolvimento do projeto foram utilizados softwares de apoio para visualização e manipulação de modelos tridimensionais:

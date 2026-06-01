@@ -387,7 +387,7 @@ int main()
 	glUniform3f(glGetUniformLocation(shaderID, "ks"), 1.0f, 1.0f, 1.0f);
 	glUniform1f(glGetUniformLocation(shaderID, "shininess"), 32.0f);
 
-	GLuint texID = loadTexture("../assets/tex/pixelWall.png");
+	GLuint texID = loadTexture("../assets/tex/grass.jpg");
 	glUniform1i(glGetUniformLocation(shaderID, "tex_buffer"), 0);
 	GLuint viewLoc = glGetUniformLocation(shaderID, "view");
 	GLuint projLoc = glGetUniformLocation(shaderID, "projection");
@@ -443,7 +443,7 @@ int main()
 		glUniformMatrix4fv(projLoc, 1, GL_FALSE, glm::value_ptr(projection));
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
-		glClearColor(0.15f, 0.15f, 0.15f, 1.0f);
+		glClearColor(0.85f, 0.92f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		float angle = (GLfloat)glfwGetTime();
