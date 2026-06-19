@@ -5,7 +5,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-// Direções de movimento
+// Direções possíveis da câmera
 enum Camera_Movement {
     FORWARD,
     BACKWARD,
@@ -15,19 +15,23 @@ enum Camera_Movement {
 
 class Camera {
 public:
+    // Vetores que definem posição e orientação da câmera
     glm::vec3 Position;
     glm::vec3 Front;
     glm::vec3 Up;
     glm::vec3 Right;
     glm::vec3 WorldUp;
 
+    // Ângulos usados para rotacionar a câmera
     float Yaw;
     float Pitch;
 
+    // Configurações de movimento
     float MovementSpeed;
     float MouseSensitivity;
     float Zoom;
 
+    // Inicializa a câmera com valores padrão
     Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.0f),
            glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
            float yaw = -90.0f,
@@ -46,11 +50,13 @@ public:
         updateCameraVectors();
     }
 
+    // Gera a matriz View utilizada na renderização
     glm::mat4 GetViewMatrix()
     {
         return glm::lookAt(Position, Position + Front, Up);
     }
 
+    // Move a câmera pelo cenário
     void ProcessKeyboard(Camera_Movement direction, float deltaTime)
     {
         float velocity = MovementSpeed * deltaTime;
@@ -65,6 +71,7 @@ public:
             Position += Right * velocity;
     }
 
+    // Rotação da câmera pelo mouse
     void ProcessMouseMovement(float xoffset, float yoffset, GLboolean constrainPitch = true)
     {
         xoffset *= MouseSensitivity;
@@ -73,6 +80,7 @@ public:
         Yaw += xoffset;
         Pitch += yoffset;
 
+        // Evita virar a câmera de cabeça para baixo
         if (constrainPitch)
         {
             if (Pitch > 89.0f)
@@ -84,6 +92,7 @@ public:
         updateCameraVectors();
     }
 
+    // Controle de zoom pelo scroll
     void ProcessMouseScroll(float yoffset)
     {
         Zoom -= yoffset;
@@ -96,6 +105,8 @@ public:
     }
 
 private:
+
+    // Atualiza os vetores de direção da câmera
     void updateCameraVectors()
     {
         glm::vec3 front;
