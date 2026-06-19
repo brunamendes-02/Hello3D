@@ -38,8 +38,6 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-glm::vec3 position(0.0f, 0.0f, 0.0f);
-float scaleFactor = 0.5f;
 bool animationEnabled = true;
 float bezierT = 0.0f;
 bool bezierForward = true;
@@ -210,7 +208,6 @@ const GLchar* fragmentShaderSource = "#version 450\n"
 "color = vec4(result, 1.0);\n"
 "}\n\0";
 
-bool rotateX=false, rotateY=false, rotateZ=false;
 
 GLuint loadTexture(const std::string& path)
 {
